@@ -38,7 +38,7 @@ public class ServiceUtil {
         return hiveSql;
     }
 
-    public static JSONArray getApplicationIDsByDay(String dateStr, String calArchitecture) {
+    public static JSONArray getApplicationIDsByDay(String dateStr) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         Document doc = null;
@@ -63,8 +63,9 @@ public class ServiceUtil {
                 String sumbitTime = simpleDateFormat.format(date);
                 String sumbitDay = sumbitTime.substring(0, 8);
 
-                if (sumbitDay.trim().equals(dateStr.trim()) && calArchitectureName.trim().equals(calArchitecture.trim())) {
-                    sb.append("[").append("\"").append(appID).append("\"").append(",").append("\"").append(yarnSubmitUser).append("\"").append(",").append("\"").append(yarnQueue).append("\"").append(",").append("\"").append(yarnJobStartTimeStamp).append("\"").append(",").append("\"").append(sumbitDay).append("\"").append("]").append(",");
+                if (sumbitDay.trim().equals(dateStr.trim())) {
+                    sb.append("[").append("\"").append(appID).append("\"").append(",").append("\"").append(yarnSubmitUser).append("\"").append(",").append("\"").append(yarnQueue).append("\"").append(",").
+                            append("\"").append(yarnJobStartTimeStamp).append("\"").append(",").append("\"").append(sumbitDay).append("\"").append(",").append("\"").append(calArchitectureName.trim()).append("\"").append("]").append(",");
                 }
             }
 

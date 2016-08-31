@@ -1,7 +1,7 @@
 package com.kugou.main;
 
 import com.alibaba.fastjson.JSONArray;
-import com.kugou.services.WorkerThread;
+import com.kugou.services.MrMetricWorkThread;
 import com.kugou.util.Config;
 import com.kugou.util.ServiceUtil;
 import org.apache.commons.configuration.CompositeConfiguration;
@@ -35,8 +35,7 @@ public class MainWorker {
 
         MainWorker mainWorker = new MainWorker();
         String metricDate = args[0];
-        String arch = "MAPREDUCE";
-        JSONArray jsonArray = ServiceUtil.getApplicationIDsByDay(metricDate, arch);
+        JSONArray jsonArray = ServiceUtil.getApplicationIDsByDay(metricDate);
         for (Object e : jsonArray) {
             try {
                 JSONArray item = (JSONArray) e;
@@ -45,16 +44,22 @@ public class MainWorker {
                 String yarnQueue = (String) item.get(2);
                 long yarnJobStartTimeStamp = item.getLong(3);
                 String sumbitDay = item.getString(4);
-                WorkerThread workerThread = new WorkerThread(yarnAppID, yarnSubmitUser, yarnQueue, arch,yarnJobStartTimeStamp,sumbitDay);
-                mainWorker.workPool.execute(workerThread);
+                String arcType = item.getString(5);
+
+                if (arcType.equals("MAPREDUCE")) {
+                    MrMetricWorkThread mrMetricWorkThread = new MrMetricWorkThread(yarnAppID, yarnSubmitUser, yarnQueue, arcType, yarnJobStartTimeStamp, sumbitDay);
+                    mainWorker.workPool.execute(mrMetricWorkThread);
+                } else if (arcType.equals("SPARK")) {
+                    //todo: SPARK RESOURCES COLLECT...
+
+                }
                 System.out.println("Thead Pool active thread num:" + mainWorker.workPool.getActiveCount());
             } catch (Exception ee) {
                 System.out.println(ee);
             }
         }
 
-        mainWorker.workPool.shutdown();// 关闭线程池
-        //关闭线程池，并阻塞当前线程直至线程池里的线程执行完毕或者阻塞一个小时
+        mainWorker.workPool.shutdown();
         try {
             boolean loop = true;
             do {    //每10秒检查一次是否所有任务执行完毕

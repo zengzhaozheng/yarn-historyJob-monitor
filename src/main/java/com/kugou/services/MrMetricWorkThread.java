@@ -12,14 +12,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.*;
 
 /**
  * Created by zhaozhengzeng on 2016/8/12.
  */
-public class WorkerThread implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(WorkerThread.class);
+public class MrMetricWorkThread implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(MrMetricWorkThread.class);
     private String yarnAppID;
     private String yarnQueue;
     private String arcType;
@@ -32,7 +31,7 @@ public class WorkerThread implements Runnable {
     private DBUtil dbUtil;
     private String sumbitDay;
 
-    public WorkerThread(String yarnAppID, String yarnSumbitName, String yarnQueue, String arcType, long yarnJobStartTimeStamp,String sumbitDay) {
+    public MrMetricWorkThread(String yarnAppID, String yarnSumbitName, String yarnQueue, String arcType, long yarnJobStartTimeStamp, String sumbitDay) {
         this.sumbitDay = sumbitDay;
         this.yarnJobStartTimeStamp = yarnJobStartTimeStamp;
         this.arcType = arcType;
